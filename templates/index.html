@@ -3,45 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animal Selector and File Uploader</title>
+    <title>Animal Gallery and File Uploader</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
+            background-color: #f0f0f0;
         }
         .box {
-            border: 1px solid #ccc;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 20px;
             margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
         }
         #animalImage {
             max-width: 100%;
             max-height: 300px;
             display: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         #fileInfo {
             display: none;
+            background-color: #e9f7ef;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .radio-group {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .radio-group label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+        .radio-group img {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 5px;
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+        .radio-group input[type="radio"]:checked + img {
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .radio-group input[type="radio"] {
+            display: none;
+        }
+        .btn {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
+        #progressBar {
+            width: 0%;
+            height: 10px;
+            background-color: #4CAF50;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body>
-    <h1>Animal Selector and File Uploader</h1>
+    <h1>Animal Gallery and File Uploader</h1>
     
     <div class="box">
         <h2>Select an Animal</h2>
-        <label><input type="radio" name="animal" value="cat"> Cat</label>
-        <label><input type="radio" name="animal" value="dog"> Dog</label>
-        <label><input type="radio" name="animal" value="elephant"> Elephant</label>
-        <br><br>
+        <div class="radio-group">
+            <label>
+                <input type="radio" name="animal" value="cat">
+                <img src="{{ url_for('static', filename='images/cat_icon.png') }}" alt="Cat">
+                Cat
+            </label>
+            <label>
+                <input type="radio" name="animal" value="dog">
+                <img src="{{ url_for('static', filename='images/dog_icon.png') }}" alt="Dog">
+                Dog
+            </label>
+            <label>
+                <input type="radio" name="animal" value="elephant">
+                <img src="{{ url_for('static', filename='images/elephant_icon.png') }}" alt="Elephant">
+                Elephant
+            </label>
+        </div>
         <img id="animalImage" src="" alt="Animal Image">
     </div>
     
     <div class="box">
         <h2>Upload a File</h2>
         <input type="file" id="fileInput">
+        <button id="uploadButton" class="btn">Upload</button>
+        <div class="progress-bar">
+            <div id="progressBar"></div>
+        </div>
         <div id="fileInfo"></div>
     </div>
 
