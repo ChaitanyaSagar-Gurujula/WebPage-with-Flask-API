@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Selector and File Uploader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        #animalImage {
+            max-width: 100%;
+            max-height: 300px;
+            display: none;
+        }
+        #fileInfo {
+            display: none;
+        }
+    </style>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    <h1>Animal Selector and File Uploader</h1>
+    
+    <div class="box">
+        <h2>Select an Animal</h2>
+        <label><input type="radio" name="animal" value="cat"> Cat</label>
+        <label><input type="radio" name="animal" value="dog"> Dog</label>
+        <label><input type="radio" name="animal" value="elephant"> Elephant</label>
+        <br><br>
+        <img id="animalImage" src="" alt="Animal Image">
+    </div>
+    
+    <div class="box">
+        <h2>Upload a File</h2>
+        <input type="file" id="fileInput">
+        <div id="fileInfo"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
