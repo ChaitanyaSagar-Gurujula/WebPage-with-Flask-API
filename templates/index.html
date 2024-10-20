@@ -205,6 +205,92 @@
                 flex-basis: 100%;
             }
         }
+
+        .file-input-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-label {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .file-input-label:hover {
+            background-color: #FFA000;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        #fileName {
+            display: inline-block;
+            margin-left: 10px;
+            font-style: italic;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--accent-color);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .file-upload-area.dragover {
+            background-color: rgba(255, 193, 7, 0.2);
+            border-color: var(--primary-color);
+        }
+
+        .file-upload-area p {
+            margin: 0;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .file-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        #uploadButton {
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        #progressBar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .fade-out {
+            animation: fadeOut 0.5s;
+        }
     </style>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
@@ -237,10 +323,15 @@
         
         <div class="box">
             <h2>Upload a File</h2>
-            <label for="fileInput" class="file-input-label">Choose File</label>
-            <input type="file" id="fileInput">
+            <div class="file-upload-area" id="dropZone">
+                <p>Drag & Drop files here or</p>
+                <label for="fileInput" class="file-input-label">Choose File</label>
+                <input type="file" id="fileInput">
+                <p id="fileName">No file chosen</p>
+            </div>
+            <img id="filePreview" class="file-preview" alt="File preview">
             <button id="uploadButton" class="btn">Upload</button>
-            <div class="progress-bar">
+            <div class="progress-bar" style="display: none;">
                 <div id="progressBar"></div>
             </div>
             <div id="fileInfo"></div>
