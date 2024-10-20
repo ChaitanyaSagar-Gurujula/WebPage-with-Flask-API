@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInfo = document.getElementById('fileInfo');
     const uploadButton = document.getElementById('uploadButton');
     const progressBar = document.getElementById('progressBar');
+    const resetButton = document.getElementById('resetButton');
 
     animalRadios.forEach(radio => {
         radio.addEventListener('change', async () => {
@@ -15,8 +16,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 animalImage.src = `/static/images/${result.image}`;
                 animalImage.style.display = 'block';
                 animalImage.classList.add('fade-in');
+                resetButton.style.display = 'inline-block';
             }
         });
+    });
+
+    resetButton.addEventListener('click', () => {
+        animalRadios.forEach(radio => radio.checked = false);
+        animalImage.style.display = 'none';
+        animalImage.src = '';
+        resetButton.style.display = 'none';
+    });
+
+    fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        if (file) {
+            fileInfo.innerHTML = `
+                <p><strong>Selected File:</strong> ${file.name}</p>
+                <p><strong>File Size:</strong> ${(file.size / 1024).toFixed(2)} KB</p>
+                <p><strong>File Type:</strong> ${file.type}</p>
+            `;
+            fileInfo.style.display = 'block';
+            fileInfo.classList.add('fade-in');
+        } else {
+            fileInfo.style.display = 'none';
+        }
     });
 
     uploadButton.addEventListener('click', async () => {
@@ -31,24 +55,26 @@ document.addEventListener('DOMContentLoaded', () => {
         progressBar.style.width = '0%';
         progressBar.style.display = 'block';
 
-        const response = await fetch('/upload', {
-            method: 'POST',
-            body: formData,
-            onUploadProgress: (progressEvent) => {
-                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                progressBar.style.width = `${percentCompleted}%`;
-            }
-        });
+        try {
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            fileInfo.innerHTML = `
+                <p><strong>Uploaded File:</strong> ${result.filename}</p>
+                <p><strong>File Size:</strong> ${(result.filesize / 1024).toFixed(2)} KB</p>
+                <p><strong>File Type:</strong> ${result.filetype}</p>
+            `;
+            fileInfo.style.display = 'block';
+            fileInfo.classList.add('fade-in');
+        } catch (error) {
+            console.error('Upload failed:', error);
+            fileInfo.innerHTML = '<p>Upload failed. Please try again.</p>';
+            fileInfo.style.display = 'block';
+        }
 
         progressBar.style.display = 'none';
-
-        const result = await response.json();
-        fileInfo.innerHTML = `
-            <p><strong>File Name:</strong> ${result.filename}</p>
-            <p><strong>File Size:</strong> ${(result.filesize / 1024).toFixed(2)} KB</p>
-            <p><strong>File Type:</strong> ${result.filetype}</p>
-        `;
-        fileInfo.style.display = 'block';
-        fileInfo.classList.add('fade-in');
     });
 });

@@ -4,100 +4,206 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animal Gallery and File Uploader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --accent-color: #FFC107;
+            --text-color: #333;
+            --background-color: rgba(255, 255, 255, 0.9);
+            --wood-color: #8B4513;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f0f0f0;
+            background-image: url("{{ url_for('static', filename='images/jungle_theme_backdrop.png') }}");
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
+        .container {
+            width: 100%;
+        }
+
         .box {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
+            background-color: var(--background-color);
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
         }
-        h1, h2 {
-            color: #333;
+
+        .box:hover {
+            transform: translateY(-5px);
         }
-        #animalImage {
-            max-width: 100%;
-            max-height: 300px;
-            display: none;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        h1 {
+            color: var(--wood-color);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
         }
-        #fileInfo {
-            display: none;
-            background-color: #e9f7ef;
-            border-radius: 4px;
-            padding: 10px;
-            margin-top: 10px;
+
+        h2 {
+            color: var(--primary-color);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
         }
+
         .radio-group {
             display: flex;
             justify-content: space-around;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
+
         .radio-group label {
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
+            position: relative;
+            padding: 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
         }
+
+        .radio-group label:hover {
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+
         .radio-group img {
-            width: 64px;
-            height: 64px;
-            margin-bottom: 5px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            transition: transform 0.2s;
+            transition: transform 0.3s ease;
+            object-fit: cover;
         }
+
         .radio-group input[type="radio"]:checked + img {
             transform: scale(1.1);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
         }
+
         .radio-group input[type="radio"] {
             display: none;
         }
-        .btn {
-            background-color: #4CAF50;
+
+        .animal-name {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s, bottom 0.3s;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .radio-group label:hover .animal-name {
+            opacity: 1;
+            bottom: -25px;
+        }
+
+        #animalImage {
+            max-width: 100%;
+            max-height: 400px;
+            display: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .btn, .file-input-label {
+            background-color: var(--primary-color);
             border: none;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 24px;
             text-align: center;
             text-decoration: none;
             display: inline-block;
             font-size: 16px;
             margin: 4px 2px;
             cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
+            border-radius: 25px;
+            transition: background-color 0.3s, transform 0.3s;
         }
-        .btn:hover {
+
+        .btn:hover, .file-input-label:hover {
             background-color: #45a049;
+            transform: translateY(-2px);
         }
-        .progress-bar {
-            width: 100%;
-            background-color: #ddd;
-            border-radius: 4px;
-            margin-top: 10px;
+
+        #resetButton {
+            background-color: var(--secondary-color);
+        }
+
+        #resetButton:hover {
+            background-color: #1976D2;
+        }
+
+        #fileInput {
             display: none;
         }
+
+        .file-input-label {
+            background-color: var(--accent-color);
+        }
+
+        .file-input-label:hover {
+            background-color: #FFA000;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 20px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
         #progressBar {
             width: 0%;
             height: 10px;
-            background-color: #4CAF50;
-            border-radius: 4px;
-            transition: width 0.3s;
+            background-color: var(--primary-color);
+            border-radius: 20px;
+            transition: width 0.3s ease;
         }
+
+        #fileInfo {
+            display: none;
+            background-color: #e9f7ef;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
         .fade-in {
             animation: fadeIn 0.5s;
         }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .box {
+                flex-basis: 100%;
+            }
         }
     </style>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
@@ -105,36 +211,40 @@
 <body>
     <h1>Animal Gallery and File Uploader</h1>
     
-    <div class="box">
-        <h2>Select an Animal</h2>
-        <div class="radio-group">
-            <label>
-                <input type="radio" name="animal" value="cat">
-                <img src="{{ url_for('static', filename='images/cat_icon.png') }}" alt="Cat">
-                Cat
-            </label>
-            <label>
-                <input type="radio" name="animal" value="dog">
-                <img src="{{ url_for('static', filename='images/dog_icon.png') }}" alt="Dog">
-                Dog
-            </label>
-            <label>
-                <input type="radio" name="animal" value="elephant">
-                <img src="{{ url_for('static', filename='images/elephant_icon.png') }}" alt="Elephant">
-                Elephant
-            </label>
+    <div class="container">
+        <div class="box">
+            <h2>Select an Animal</h2>
+            <div class="radio-group">
+                <label>
+                    <input type="radio" name="animal" value="cat">
+                    <img src="{{ url_for('static', filename='images/cat_icon.png') }}" alt="Cat">
+                    <span class="animal-name">Cat</span>
+                </label>
+                <label>
+                    <input type="radio" name="animal" value="dog">
+                    <img src="{{ url_for('static', filename='images/dog_icon.png') }}" alt="Dog">
+                    <span class="animal-name">Dog</span>
+                </label>
+                <label>
+                    <input type="radio" name="animal" value="elephant">
+                    <img src="{{ url_for('static', filename='images/elephant_icon.png') }}" alt="Elephant">
+                    <span class="animal-name">Elephant</span>
+                </label>
+            </div>
+            <img id="animalImage" src="" alt="Animal Image">
+            <button id="resetButton" class="btn" style="display: none;">Reset Selection</button>
         </div>
-        <img id="animalImage" src="" alt="Animal Image">
-    </div>
-    
-    <div class="box">
-        <h2>Upload a File</h2>
-        <input type="file" id="fileInput">
-        <button id="uploadButton" class="btn">Upload</button>
-        <div class="progress-bar">
-            <div id="progressBar"></div>
+        
+        <div class="box">
+            <h2>Upload a File</h2>
+            <label for="fileInput" class="file-input-label">Choose File</label>
+            <input type="file" id="fileInput">
+            <button id="uploadButton" class="btn">Upload</button>
+            <div class="progress-bar">
+                <div id="progressBar"></div>
+            </div>
+            <div id="fileInfo"></div>
         </div>
-        <div id="fileInfo"></div>
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
