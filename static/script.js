@@ -26,7 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     resetButton.addEventListener('click', () => {
-        animalRadios.forEach(radio => radio.checked = false);
+        animalRadios.forEach(radio => {
+            radio.checked = false;
+            radio.parentElement.classList.remove('selected');
+        });
         animalImage.style.display = 'none';
         animalImage.src = '';
         resetButton.style.display = 'none';
@@ -106,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         progressBarContainer.style.display = 'block';
         progressBar.style.width = '0%';
         fileInfo.innerHTML = '';
-        fileInfo.style.display = 'none';
+        fileInfo.style.display = 'block';
 
         try {
             const response = await fetch('/upload', {
@@ -125,8 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p><strong>File Size:</strong> ${(result.filesize / 1024).toFixed(2)} KB</p>
                 <p><strong>File Type:</strong> ${result.filetype}</p>
             `;
-            fileInfo.style.display = 'block';
-            fileInfo.classList.add('fade-in');
+
+            // Scroll to the file info
+            fileInfo.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
             // Reset the file input to allow new file selection
             fileInput.value = '';
@@ -134,25 +138,32 @@ document.addEventListener('DOMContentLoaded', () => {
             fileName.textContent = 'No file chosen';
             filePreview.style.display = 'none';
 
-            // Fade out the file info and hide progress bar after 5 seconds
+            // Hide progress bar after 2 seconds
             setTimeout(() => {
-                fileInfo.classList.remove('fade-in');
-                fileInfo.classList.add('fade-out');
                 progressBarContainer.classList.add('fade-out');
                 setTimeout(() => {
-                    fileInfo.style.display = 'none';
                     progressBarContainer.style.display = 'none';
-                    fileInfo.classList.remove('fade-out');
                     progressBarContainer.classList.remove('fade-out');
                     progressBar.style.width = '0%';
-                }, 500); // Match this to your fade-out animation duration
-            }, 5000);
+                }, 500); // This should match your transition duration
+            }, 2000);
+
+            // Fade out the file info after 5 seconds
+            setTimeout(() => {
+                fileInfo.classList.add('fade-out');
+                setTimeout(() => {
+                    fileInfo.style.display = 'none';
+                    fileInfo.classList.remove('fade-out');
+                }, 500); // This should match your transition duration
+            }, 3500);
 
         } catch (error) {
             console.error('Upload failed:', error);
             fileInfo.innerHTML = '<p>Upload failed. Please try again.</p>';
-            fileInfo.style.display = 'block';
             progressBarContainer.style.display = 'none';
+
+            // Scroll to the error message
+            fileInfo.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     });
 });

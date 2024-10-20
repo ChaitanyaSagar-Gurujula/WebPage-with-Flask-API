@@ -20,7 +20,7 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-image: url("{{ url_for('static', filename='images/jungle_theme_backdrop.png') }}");
+            background-image: url("{{ url_for('static', filename='images/faded_jungle_theme_backdrop.png') }}");
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
@@ -61,25 +61,20 @@
         .radio-group {
             display: flex;
             justify-content: space-around;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
-        .radio-group label {
+        .animal-label {
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
-            position: relative;
             padding: 10px;
             border-radius: 10px;
             transition: all 0.3s ease;
         }
 
-        .radio-group label:hover {
-            background-color: rgba(76, 175, 80, 0.1);
-        }
-
-        .radio-group img {
+        .animal-label img {
             width: 100px;
             height: 100px;
             border-radius: 50%;
@@ -87,32 +82,27 @@
             object-fit: cover;
         }
 
-        .radio-group input[type="radio"]:checked + img {
+        .animal-label input[type="radio"] {
+            display: none;
+        }
+
+        .animal-label input[type="radio"]:checked + img {
             transform: scale(1.1);
             box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
         }
 
-        .radio-group input[type="radio"] {
-            display: none;
+        .animal-label input[type="radio"]:checked ~ .animal-name {
+            font-weight: bold;
+            color: #4CAF50;
         }
 
         .animal-name {
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s, bottom 0.3s;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
+            margin-top: 5px;
             font-size: 14px;
         }
 
-        .radio-group label:hover .animal-name {
-            opacity: 1;
-            bottom: -25px;
+        .animal-label:hover {
+            background-color: rgba(76, 175, 80, 0.1);
         }
 
         #animalImage {
@@ -289,7 +279,23 @@
         }
 
         .fade-out {
-            animation: fadeOut 0.5s;
+            animation: fadeOut 0.5s forwards;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .file-info, .progress-bar {
+            opacity: 1;
+            transition: opacity 0.5s ease-out, max-height 0.5s ease-out;
+            max-height: 1000px; /* Adjust this value based on your content */
+            overflow: hidden;
+        }
+
+        .fade-out {
+            opacity: 0;
+            max-height: 0;
         }
     </style>
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
@@ -301,17 +307,17 @@
         <div class="box">
             <h2>Select an Animal</h2>
             <div class="radio-group">
-                <label>
+                <label class="animal-label">
                     <input type="radio" name="animal" value="cat">
                     <img src="{{ url_for('static', filename='images/cat_icon.png') }}" alt="Cat">
                     <span class="animal-name">Cat</span>
                 </label>
-                <label>
+                <label class="animal-label">
                     <input type="radio" name="animal" value="dog">
                     <img src="{{ url_for('static', filename='images/dog_icon.png') }}" alt="Dog">
                     <span class="animal-name">Dog</span>
                 </label>
-                <label>
+                <label class="animal-label">
                     <input type="radio" name="animal" value="elephant">
                     <img src="{{ url_for('static', filename='images/elephant_icon.png') }}" alt="Elephant">
                     <span class="animal-name">Elephant</span>
