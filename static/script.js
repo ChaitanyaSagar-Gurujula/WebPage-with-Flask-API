@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const fileName = document.getElementById('fileName');
     const filePreview = document.getElementById('filePreview');
-    const fileInfo = document.getElementById('fileInfo');
     const uploadButton = document.getElementById('uploadButton');
     const progressBar = document.getElementById('progressBar');
     const resetButton = document.getElementById('resetButton');
