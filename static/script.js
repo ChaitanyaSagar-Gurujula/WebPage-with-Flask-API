@@ -94,6 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const fileInfoPopup = document.getElementById('fileInfoPopup');
+    const fileInfoContent = document.getElementById('fileInfoContent');
+    const closePopupButton = document.getElementById('closePopup');
     const progressBarContainer = document.querySelector('.progress-bar');
 
     uploadButton.addEventListener('click', async () => {
@@ -108,8 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show and reset the progress bar
         progressBarContainer.style.display = 'block';
         progressBar.style.width = '0%';
-        fileInfo.innerHTML = '';
-        fileInfo.style.display = 'block';
 
         try {
             const response = await fetch('/upload', {
@@ -122,15 +123,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const result = await response.json();
-            progressBar.style.width = '100%';
-            fileInfo.innerHTML = `
-                <p><strong>Uploaded File:</strong> ${result.filename}</p>
-                <p><strong>File Size:</strong> ${(result.filesize / 1024).toFixed(2)} KB</p>
-                <p><strong>File Type:</strong> ${result.filetype}</p>
-            `;
-
-            // Scroll to the file info
-            fileInfo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Animate progress bar to 100%
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                progressBar.style.width = `${progress}%`;
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    
+                    // Hide progress bar after completion
+                    setTimeout(() => {
+                        progressBarContainer.style.display = 'none';
+                        progressBar.style.width = '0%';
+                        
+                        // Show popup after progress bar is hidden
+                        showFileInfoPopup(result);
+                    }, 500);
+                }
+            }, 50);
 
             // Reset the file input to allow new file selection
             fileInput.value = '';
@@ -138,32 +149,35 @@ document.addEventListener('DOMContentLoaded', () => {
             fileName.textContent = 'No file chosen';
             filePreview.style.display = 'none';
 
-            // Hide progress bar after 2 seconds
-            setTimeout(() => {
-                progressBarContainer.classList.add('fade-out');
-                setTimeout(() => {
-                    progressBarContainer.style.display = 'none';
-                    progressBarContainer.classList.remove('fade-out');
-                    progressBar.style.width = '0%';
-                }, 500); // This should match your transition duration
-            }, 2000);
-
-            // Fade out the file info after 5 seconds
-            setTimeout(() => {
-                fileInfo.classList.add('fade-out');
-                setTimeout(() => {
-                    fileInfo.style.display = 'none';
-                    fileInfo.classList.remove('fade-out');
-                }, 500); // This should match your transition duration
-            }, 3500);
-
         } catch (error) {
             console.error('Upload failed:', error);
-            fileInfo.innerHTML = '<p>Upload failed. Please try again.</p>';
             progressBarContainer.style.display = 'none';
+            showFileInfoPopup({ error: 'Upload failed. Please try again.' });
+        }
+    });
 
-            // Scroll to the error message
-            fileInfo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    function showFileInfoPopup(result) {
+        if (result.error) {
+            fileInfoContent.innerHTML = `<p>${result.error}</p>`;
+        } else {
+            fileInfoContent.innerHTML = `
+                <p><strong>Uploaded File:</strong> ${result.filename}</p>
+                <p><strong>File Size:</strong> ${(result.filesize / 1024).toFixed(2)} KB</p>
+                <p><strong>File Type:</strong> ${result.filetype}</p>
+            `;
+        }
+        fileInfoPopup.style.display = 'block';
+    }
+
+    // Close popup when clicking the OK button
+    closePopupButton.addEventListener('click', () => {
+        fileInfoPopup.style.display = 'none';
+    });
+
+    // Close popup when clicking outside the popup content
+    window.addEventListener('click', (event) => {
+        if (event.target === fileInfoPopup) {
+            fileInfoPopup.style.display = 'none';
         }
     });
 });
